@@ -4,7 +4,7 @@ sequenceDiagram
     participant browser
     participant server
 
-    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
     activate server
     server-->>browser: HTML document
     deactivate server
@@ -14,12 +14,12 @@ sequenceDiagram
     server-->>browser: the css file
     deactivate server
 
-    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
     activate server
     server-->>browser: the JavaScript file
     deactivate server
 
-    Note right of browser: The browser starts executing the JavaScript code that fetches the JSON from the server
+    Note right of browser: The browser starts executing the JavaScript code of the single-page app
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
     activate server
@@ -30,14 +30,17 @@ sequenceDiagram
 
     browser->>server: POST https://studies.cs.helsinki.fi/exampleapp/new_note<br>Content-Type: application/json<br>{ "content": "A new note", "date": "2024-11-20" }
     activate server
-    server-->>browser: 201 Created
+    server-->>browser: 302 Found<br>Redirect to /exampleapp/spa
     deactivate server
 
-    Note right of browser: The browser updates the notes view by fetching the updated data
+    browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/spa
+    activate server
+    server-->>browser: HTML document
+    deactivate server
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
     activate server
     server-->>browser: [{ "content": "HTML is easy", "date": "2023-1-1" }, { "content": "A new note", "date": "2024-11-20" }, ... ]
     deactivate server
 
-    Note right of browser: The browser re-renders the notes list to include the new note
+    Note right of browser: The JavaScript code dynamically updates the notes list to include the new note
